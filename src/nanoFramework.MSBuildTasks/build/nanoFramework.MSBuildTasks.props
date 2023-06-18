@@ -13,7 +13,6 @@
 
   <PropertyGroup>
     <GeneratedResxFileName>Resources.resx</GeneratedResxFileName>
-    <GenerateResxWithForwardSlashes>false</GenerateResxWithForwardSlashes>
   </PropertyGroup>
 
 </Project>

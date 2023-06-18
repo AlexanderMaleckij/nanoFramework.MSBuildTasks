@@ -1,16 +1,17 @@
-﻿using System;
-using System.IO;
+﻿using System.IO.Abstractions;
 using System.Linq;
-using System.Resources;
 
 using Microsoft.Build.Framework;
-using Microsoft.Build.Utilities;
+using Microsoft.Extensions.DependencyInjection;
 
+using nanoFramework.MSBuildTasks.Factories;
+using nanoFramework.MSBuildTasks.Mappers;
 using nanoFramework.MSBuildTasks.Models;
+using nanoFramework.MSBuildTasks.Services;
 
 namespace nanoFramework.MSBuildTasks.Tasks
 {
-    public sealed class GenerateResx : Task
+    public sealed class GenerateResx : MSBuildTaskBase
     {
         [Required]
         public string ProjectDirectory { get; set; }
@@ -19,51 +20,41 @@ namespace nanoFramework.MSBuildTasks.Tasks
         public string ResxFileName { get; set; }
 
         [Required]
-        public bool ResxUseForwardSlashes { get; set; }
+        public ITaskItem[] TaskItems { get; set; }
 
-        [Required]
-        public ITaskItem[] Sources { get; set; }
-
-        public override bool Execute()
+        public override void ConfigureServices(IServiceCollection collection)
         {
-            EmbedResourcesTaskItem[] sources = null;
+            collection
+                .AddSingleton<ITaskItemMapper<ResourcesSource>, ResourcesSourceMapper>()
+                .AddSingleton<INanoResXWriterFactory, NanoResxWriterFactory>()
+                .AddSingleton<IResourcesLocationProcessorFactory, ResourcesLocationProcessorFactory>()
+                .AddSingleton<IFileSystemService, FileSystemService>()
+                .AddSingleton<IFileSystem>(new FileSystem());
+        }
 
-            try
+        public bool ExecuteTask(
+            ITaskItemMapper<ResourcesSource> resourcesSourceMapper,
+            INanoResXWriterFactory nanoResxWriterFactory,
+            IResourcesLocationProcessorFactory resourcesSourceProcessorFactory)
+        {
+            var resourcesLocations = TaskItems.Select(resourcesSourceMapper.Map);
+            var writer = nanoResxWriterFactory.Create(ResxFileName);
+
+            var processorOptions = new ResourcesSourceProcessorOptions
             {
-                sources = Sources.Select(x => new EmbedResourcesTaskItem(ProjectDirectory, x)).ToArray();
-            }
-            catch (Exception e)
+                ProjectDirectory = ProjectDirectory,
+                NanoResXWriter = writer,
+            };
+
+            var resourcesLocationProcessor = resourcesSourceProcessorFactory.Create(processorOptions);
+
+            using (writer)
             {
-                Log.LogErrorFromException(e);
-
-                return false;
-            }
-
-            var resourceWriter = new ResXResourceWriter(ResxFileName);
-
-            foreach (var source in sources)
-            {
-                var fullFilesPathsToInclude = Directory.GetFiles(source.AbsoluteFolderPath, "*", SearchOption.AllDirectories)
-                    .Where(path => source.RegexFilter.IsMatch(path))
-                    .ToArray();
-
-                foreach (var fullFilePathToInclude in fullFilesPathsToInclude)
+                foreach (var resourcesLocation in resourcesLocations)
                 {
-                    var relativeFilePath = fullFilePathToInclude.Substring(source.AbsoluteFolderPath.Length + 1);
-
-                    var resourceName = ResxUseForwardSlashes
-                        ? relativeFilePath.Replace('\\', '/')
-                        : relativeFilePath;
-
-                    var fileRef = new ResXFileRef(fullFilePathToInclude, typeof(byte[]).AssemblyQualifiedName);
-                    var dataNode = new ResXDataNode(resourceName, fileRef);
-
-                    resourceWriter.AddResource(dataNode);
+                    resourcesLocationProcessor.Process(resourcesLocation);
                 }
             }
-
-            resourceWriter.Generate();
-            resourceWriter.Close();
 
             return true;
         }

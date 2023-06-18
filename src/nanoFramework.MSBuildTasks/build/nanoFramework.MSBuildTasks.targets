@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <Target Name="GenerateResxAndEmbedResources" BeforeTargets="BeforeBuild" Condition="@(EmbedResources->Count()) &gt; 0">
+  <Target Name="GenerateResxAndEmbedResources" BeforeTargets="BeforeBuild" Condition="@(ResourcesSource->Count()) &gt; 0">
     <GenerateResx
       ProjectDirectory="$(MSBuildProjectDirectory)"
       ResxFileName="$(GeneratedResxFileName)"
-      ResxUseForwardSlashes="$(GenerateResxWithForwardSlashes)"
-      Sources="@(EmbedResources)" />
+      TaskItems="@(ResourcesSource)" />
     
     <ItemGroup>
       <EmbeddedResource Include="$(GeneratedResxFileName)" />
