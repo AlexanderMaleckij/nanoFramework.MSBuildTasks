@@ -12,8 +12,7 @@ namespace nanoFramework.MSBuildTasks.Services
 
         public FileSystemService(IFileSystem fileSystem)
         {
-            _fileSystem = fileSystem
-                ?? throw new ArgumentNullException(nameof(fileSystem));
+            _fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
         }
 
         public string[] GetDirectoryFiles(string path, string regexFilter)

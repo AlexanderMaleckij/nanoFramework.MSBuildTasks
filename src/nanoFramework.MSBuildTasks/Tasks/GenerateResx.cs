@@ -54,6 +54,8 @@ namespace nanoFramework.MSBuildTasks.Tasks
                 {
                     resourcesLocationProcessor.Process(resourcesLocation);
                 }
+
+                writer.Generate();
             }
 
             return true;

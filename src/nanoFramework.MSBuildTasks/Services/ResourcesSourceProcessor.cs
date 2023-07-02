@@ -19,6 +19,11 @@ namespace nanoFramework.MSBuildTasks.Services
 
         public void Process(ResourcesSource resourcesLocation)
         {
+            if (resourcesLocation is null)
+            {
+                throw new ArgumentNullException(nameof(resourcesLocation));
+            }
+
             var absoluteFolderPath = _fileSystemService.GetAbsolutePath(resourcesLocation.FolderPath, _processorOptions.ProjectDirectory);
             var directoryFilesFullPaths = _fileSystemService.GetDirectoryFiles(absoluteFolderPath, resourcesLocation.RegexFilter);
 

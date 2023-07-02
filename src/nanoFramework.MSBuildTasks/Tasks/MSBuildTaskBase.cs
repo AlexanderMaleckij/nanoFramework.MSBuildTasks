@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 
@@ -8,11 +9,12 @@ using Microsoft.Extensions.DependencyInjection;
 namespace nanoFramework.MSBuildTasks.Tasks
 {
     // https://github.com/dotnet/arcade/blob/main/Documentation/Mechanics/MSBuildTaskDependencyInjection.md
+    [ExcludeFromCodeCoverage]
     public abstract partial class MSBuildTaskBase : Task
     {
         /// <summary>
         /// This is the name of the method on the implementation of this class that behaves as "Execute" would in a basic
-        /// impelmentation of an MSBuild Task. 
+        /// implementation of an MSBuild Task. 
         /// </summary>
         private const string ExecuteMethodName = "ExecuteTask";
 
@@ -48,7 +50,7 @@ namespace nanoFramework.MSBuildTasks.Tasks
         }
 
         /// <summary>
-        /// Default service configuration. This method can be overridden in the impelmented class so that 
+        /// Default service configuration. This method can be overridden in the implemented class so that 
         /// it can configure the dependencies that the implemented task requires. 
         /// 
         /// This method can also be called from the tests to complete the service collection with any dependencies 
@@ -58,7 +60,7 @@ namespace nanoFramework.MSBuildTasks.Tasks
         public abstract void ConfigureServices(IServiceCollection collection);
 
         /// <summary>
-        /// Uses some reflection magic to look up the types of depenencies that to be injected into the implemented task. 
+        /// Uses some reflection magic to look up the types of dependencies that to be injected into the implemented task. 
         /// </summary>
         /// <returns></returns>
         public Type[] GetExecuteParameterTypes()

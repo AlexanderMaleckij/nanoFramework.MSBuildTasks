@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Resources;
 
 namespace nanoFramework.MSBuildTasks.Services
@@ -9,6 +10,11 @@ namespace nanoFramework.MSBuildTasks.Services
 
         public NanoResXWriter(Stream stream)
         {
+            if (stream is null)
+            {
+                throw new ArgumentNullException(nameof(stream));
+            }
+
             _resXResourceWriter = new ResXResourceWriter(stream);
         }
 
@@ -19,6 +25,8 @@ namespace nanoFramework.MSBuildTasks.Services
 
             _resXResourceWriter.AddResource(dataNode);
         }
+
+        public void Generate() => _resXResourceWriter.Generate();
 
         public void Dispose() => _resXResourceWriter.Dispose();
     }

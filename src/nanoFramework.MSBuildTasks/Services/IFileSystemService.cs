@@ -1,6 +1,6 @@
 ﻿namespace nanoFramework.MSBuildTasks.Services
 {
-    internal interface IFileSystemService
+    public interface IFileSystemService
     {
         string[] GetDirectoryFiles(string path, string regexFilter);
 
