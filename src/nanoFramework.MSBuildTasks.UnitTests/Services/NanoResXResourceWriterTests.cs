@@ -10,7 +10,7 @@ using nanoFramework.MSBuildTasks.Services;
 namespace nanoFramework.MSBuildTasks.UnitTests.Services
 {
     [TestClass]
-    public class NanoResXWriterTests
+    public class NanoResXResourceWriterTests
     {
         [TestMethod]
         public void GivenConstructor_WhenStreamIsNull_ThenShouldThrowArgumentNullException()
@@ -19,7 +19,7 @@ namespace nanoFramework.MSBuildTasks.UnitTests.Services
             var stream = null as Stream;
 
             // Act
-            Action act = () => new NanoResXWriter(stream);
+            Action act = () => new NanoResXResourceWriter(stream);
 
             // Assert
             act.Should().ThrowExactly<ArgumentNullException>()
@@ -31,7 +31,7 @@ namespace nanoFramework.MSBuildTasks.UnitTests.Services
         {
             // Arrange
             var stream = new MemoryStream();
-            var nanoResxWriter = new NanoResXWriter(stream);
+            var nanoResxWriter = new NanoResXResourceWriter(stream);
 
             var expectedResxContent =
 @"<?xml version=""1.0"" encoding=""utf-8""?>

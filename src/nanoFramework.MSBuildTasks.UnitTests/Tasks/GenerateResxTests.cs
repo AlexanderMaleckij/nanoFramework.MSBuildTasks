@@ -56,11 +56,11 @@ namespace nanoFramework.MSBuildTasks.UnitTests.Tasks
         public void GivenExecuteTask_WhenCalled_ThenShouldCreateNanoResXResourceWriter()
         {
             // Arrange
-            var writerFactoryMock = new Mock<INanoResXWriterFactory>();
+            var writerFactoryMock = new Mock<INanoResXResourceWriterFactory>();
 
             writerFactoryMock
                 .Setup(x => x.Create(It.IsAny<string>()))
-                .Returns(Mock.Of<INanoResXWriter>());
+                .Returns(Mock.Of<INanoResXResourceWriter>());
 
             var serviceProvider = BuildServiceProvider(writerFactory: writerFactoryMock.Object);
 
@@ -81,8 +81,8 @@ namespace nanoFramework.MSBuildTasks.UnitTests.Tasks
         public void GivenExecuteTask_WhenCalled_ThenShouldCreateNanoResXResourcesSourceProcessor()
         {
             // Arrange
-            var writer = Mock.Of<INanoResXWriter>();
-            var writerFactoryMock = new Mock<INanoResXWriterFactory>();
+            var writer = Mock.Of<INanoResXResourceWriter>();
+            var writerFactoryMock = new Mock<INanoResXResourceWriterFactory>();
             var processorFactoryMock = new Mock<IResourcesLocationProcessorFactory>();
 
             writerFactoryMock
@@ -118,10 +118,10 @@ namespace nanoFramework.MSBuildTasks.UnitTests.Tasks
         public void GivenExecuteTask_WhenCalled_ThenShouldProcessAllSourcesAndCallGenerate()
         {
             // Arrange
-            var writerMock = new Mock<INanoResXWriter>();
+            var writerMock = new Mock<INanoResXResourceWriter>();
             var processorMock = new Mock<IResourcesSourceProcessor>();
             var mapperMock = new Mock<ITaskItemMapper<ResourcesSource>>();
-            var writerFactoryMock = new Mock<INanoResXWriterFactory>();
+            var writerFactoryMock = new Mock<INanoResXResourceWriterFactory>();
             var processorFactoryMock = new Mock<IResourcesLocationProcessorFactory>();
 
             var taskItems = new[]
@@ -188,14 +188,14 @@ namespace nanoFramework.MSBuildTasks.UnitTests.Tasks
 
         public static ServiceProvider BuildServiceProvider(
             ITaskItemMapper<ResourcesSource> mapper = null,
-            INanoResXWriterFactory writerFactory = null,
+            INanoResXResourceWriterFactory writerFactory = null,
             IResourcesLocationProcessorFactory processorFactory = null,
             IFileSystemService fileSystemService = null)
         {
             var serviceCollection = new ServiceCollection();
 
             var mapperMock = new Mock<ITaskItemMapper<ResourcesSource>>();
-            var writerFactoryMock = new Mock<INanoResXWriterFactory>();
+            var writerFactoryMock = new Mock<INanoResXResourceWriterFactory>();
             var processorFactoryMock = new Mock<IResourcesLocationProcessorFactory>();
 
             mapperMock
@@ -204,7 +204,7 @@ namespace nanoFramework.MSBuildTasks.UnitTests.Tasks
 
             writerFactoryMock
                 .Setup(x => x.Create(It.IsAny<string>()))
-                .Returns(Mock.Of<INanoResXWriter>());
+                .Returns(Mock.Of<INanoResXResourceWriter>());
 
             processorFactoryMock
                 .Setup(x => x.Create(It.IsAny<ResourcesSourceProcessorOptions>()))

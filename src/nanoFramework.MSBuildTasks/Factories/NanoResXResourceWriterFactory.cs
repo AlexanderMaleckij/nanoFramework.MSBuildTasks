@@ -6,20 +6,20 @@ using nanoFramework.MSBuildTasks.Utils;
 
 namespace nanoFramework.MSBuildTasks.Factories
 {
-    internal sealed class NanoResxWriterFactory : INanoResXWriterFactory
+    internal sealed class NanoResXResourceWriterFactory : INanoResXResourceWriterFactory
     {
         private readonly IFileSystem _fileSystem;
 
-        public NanoResxWriterFactory(IFileSystem fileSystem)
+        public NanoResXResourceWriterFactory(IFileSystem fileSystem)
         {
             _fileSystem = ParamChecker.Check(fileSystem, nameof(fileSystem));
         }
 
-        public INanoResXWriter Create(string resxFileName)
+        public INanoResXResourceWriter Create(string resxFileName)
         {
             var fileStream = _fileSystem.FileStream.New(resxFileName, FileMode.Create, FileAccess.Write);
 
-            return new NanoResXWriter(fileStream);
+            return new NanoResXResourceWriter(fileStream);
         }
     }
 }

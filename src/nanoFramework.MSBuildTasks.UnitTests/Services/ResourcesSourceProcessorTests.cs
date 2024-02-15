@@ -80,7 +80,7 @@ namespace nanoFramework.MSBuildTasks.UnitTests.Services
 
             var options = new ResourcesSourceProcessorOptions
             {
-                 NanoResXWriter = Mock.Of<INanoResXWriter>(),
+                 NanoResXWriter = Mock.Of<INanoResXResourceWriter>(),
                  ProjectDirectory = @"C:\Projects\Project",
             };
 
@@ -111,7 +111,7 @@ namespace nanoFramework.MSBuildTasks.UnitTests.Services
 
             var options = new ResourcesSourceProcessorOptions
             {
-                NanoResXWriter = Mock.Of<INanoResXWriter>(),
+                NanoResXWriter = Mock.Of<INanoResXResourceWriter>(),
             };
 
             var processor = new ResourcesSourceProcessor(fileSystemServiceMock.Object, options);
@@ -139,7 +139,7 @@ namespace nanoFramework.MSBuildTasks.UnitTests.Services
             };
 
             var fileSystemServiceMock = new Mock<IFileSystemService>();
-            var nanoResXWriterMock = new Mock<INanoResXWriter>();
+            var nanoResXWriterMock = new Mock<INanoResXResourceWriter>();
 
             fileSystemServiceMock
                 .Setup(x => x.GetAbsolutePath(It.IsAny<string>(), It.IsAny<string>()))

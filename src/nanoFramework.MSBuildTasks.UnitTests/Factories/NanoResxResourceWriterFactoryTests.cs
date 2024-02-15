@@ -12,7 +12,7 @@ using nanoFramework.MSBuildTasks.Services;
 namespace nanoFramework.MSBuildTasks.UnitTests.Factories
 {
     [TestClass]
-    public class NanoResxWriterFactoryTests
+    public class NanoResxResourceWriterFactoryTests
     {
         [TestMethod]
         public void GivenConstructor_WhenFileSystemIsNull_ThemShouldThrowArgumentNullException()
@@ -21,7 +21,7 @@ namespace nanoFramework.MSBuildTasks.UnitTests.Factories
             var fileSystem = null as IFileSystem;
 
             // Act
-            Action act = () => new NanoResxWriterFactory(fileSystem);
+            Action act = () => new NanoResXResourceWriterFactory(fileSystem);
 
             // Assert
             act.Should().ThrowExactly<ArgumentNullException>()
@@ -34,13 +34,13 @@ namespace nanoFramework.MSBuildTasks.UnitTests.Factories
             // Arrange
             var resxFileName = "test.resx";
             var fileSystem = new MockFileSystem();
-            var factory = new NanoResxWriterFactory(fileSystem);
+            var factory = new NanoResXResourceWriterFactory(fileSystem);
 
             // Act
             var writer = factory.Create(resxFileName);
 
             // Assert
-            writer.Should().NotBeNull().And.BeOfType<NanoResXWriter>();
+            writer.Should().NotBeNull().And.BeOfType<NanoResXResourceWriter>();
         }
     }
 }

@@ -5,11 +5,11 @@ using nanoFramework.MSBuildTasks.Utils;
 
 namespace nanoFramework.MSBuildTasks.Services
 {
-    internal sealed class NanoResXWriter : INanoResXWriter
+    internal sealed class NanoResXResourceWriter : INanoResXResourceWriter
     {
         private readonly ResXResourceWriter _resXResourceWriter;
 
-        public NanoResXWriter(Stream stream)
+        public NanoResXResourceWriter(Stream stream)
         {
             ParamChecker.Check(stream, nameof(stream));
 

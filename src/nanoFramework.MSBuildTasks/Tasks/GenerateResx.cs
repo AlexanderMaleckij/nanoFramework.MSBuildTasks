@@ -26,7 +26,7 @@ namespace nanoFramework.MSBuildTasks.Tasks
         {
             collection
                 .AddSingleton<ITaskItemMapper<ResourcesSource>, ResourcesSourceMapper>()
-                .AddSingleton<INanoResXWriterFactory, NanoResxWriterFactory>()
+                .AddSingleton<INanoResXResourceWriterFactory, NanoResXResourceWriterFactory>()
                 .AddSingleton<IResourcesLocationProcessorFactory, ResourcesLocationProcessorFactory>()
                 .AddSingleton<IFileSystemService, FileSystemService>()
                 .AddSingleton<IFileSystem>(new FileSystem());
@@ -34,7 +34,7 @@ namespace nanoFramework.MSBuildTasks.Tasks
 
         public bool ExecuteTask(
             ITaskItemMapper<ResourcesSource> resourcesSourceMapper,
-            INanoResXWriterFactory nanoResxWriterFactory,
+            INanoResXResourceWriterFactory nanoResxWriterFactory,
             IResourcesLocationProcessorFactory resourcesSourceProcessorFactory)
         {
             var resourcesLocations = TaskItems.Select(resourcesSourceMapper.Map);

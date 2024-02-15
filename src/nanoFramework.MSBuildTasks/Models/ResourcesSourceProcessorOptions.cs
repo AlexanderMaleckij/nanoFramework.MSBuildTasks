@@ -6,6 +6,6 @@ namespace nanoFramework.MSBuildTasks.Models
     {
         public string ProjectDirectory { get; set; }
 
-        public INanoResXWriter NanoResXWriter { get; set; }
+        public INanoResXResourceWriter NanoResXWriter { get; set; }
     }
 }
