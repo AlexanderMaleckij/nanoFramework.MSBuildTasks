@@ -7,7 +7,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
 using nanoFramework.MSBuildTasks.Factories;
-using nanoFramework.MSBuildTasks.Models;
 using nanoFramework.MSBuildTasks.Services;
 
 namespace nanoFramework.MSBuildTasks.UnitTests.Factories
@@ -33,12 +32,12 @@ namespace nanoFramework.MSBuildTasks.UnitTests.Factories
         public void GivenCreate_WhenCalled_ThenShouldReturnNotNullInstanceOfResourcesSourceProcessor()
         {
             // Arrange
-            var processorOptions = Mock.Of<ResourcesSourceProcessorOptions>();
+            var nanoResXResourceWriter = Mock.Of<INanoResXResourceWriter>();
             var fileSystemService = Mock.Of<IFileSystemService>();
             var factory = new ResourcesLocationProcessorFactory(fileSystemService);
 
             // Act
-            var processor = factory.Create(processorOptions);
+            var processor = factory.Create(nanoResXResourceWriter);
 
             // Assert
             processor.Should().NotBeNull().And.BeOfType<ResourcesSourceProcessor>();

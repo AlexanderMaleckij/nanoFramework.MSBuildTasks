@@ -16,6 +16,13 @@ namespace nanoFramework.MSBuildTasks.Services
             _resXResourceWriter = new ResXResourceWriter(stream);
         }
 
+        public NanoResXResourceWriter(string fileName)
+        {
+            ParamChecker.Check(fileName, nameof(fileName));
+
+            _resXResourceWriter = new ResXResourceWriter(fileName);
+        }
+
         public void Add(string resourceName, string resourcePath)
         {
             var fileRef = new ResXFileRef(resourcePath, typeof(byte[]).AssemblyQualifiedName);

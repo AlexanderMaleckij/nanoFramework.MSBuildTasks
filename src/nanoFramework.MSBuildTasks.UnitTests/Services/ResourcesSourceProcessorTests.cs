@@ -22,7 +22,7 @@ namespace nanoFramework.MSBuildTasks.UnitTests.Services
                 yield return new object[]
                 {
                     null,
-                    Mock.Of<ResourcesSourceProcessorOptions>(),
+                    Mock.Of<INanoResXResourceWriter>(),
                     "fileSystemService"
                 };
 
@@ -30,7 +30,7 @@ namespace nanoFramework.MSBuildTasks.UnitTests.Services
                 {
                     Mock.Of<IFileSystemService>(),
                     null,
-                    "processorOptions"
+                    "nanoResXResourceWriter"
                 };
             }
         }
@@ -39,11 +39,11 @@ namespace nanoFramework.MSBuildTasks.UnitTests.Services
         [DynamicData(nameof(ConstructorTestData))]
         public void GivenConstructor_WhenParameterIsNull_ThenShouldThrowArgumentNullException(
             IFileSystemService fileSystemService,
-            ResourcesSourceProcessorOptions options,
+            INanoResXResourceWriter nanoResXResourceWriter,
             string nullParameterName)
         {
             // Act
-            Action act = () => new ResourcesSourceProcessor(fileSystemService, options);
+            Action act = () => new ResourcesSourceProcessor(fileSystemService, nanoResXResourceWriter);
 
             // Assert
             act.Should().ThrowExactly<ArgumentNullException>()
@@ -55,16 +55,35 @@ namespace nanoFramework.MSBuildTasks.UnitTests.Services
         {
             // Arrange
             var nullSource = null as ResourcesSource;
+            var projectDirectory = "test";
             var fileSystemService = Mock.Of<IFileSystemService>();
-            var options = Mock.Of<ResourcesSourceProcessorOptions>();
-            var processor = new ResourcesSourceProcessor(fileSystemService, options);
+            var nanoResXResourceWriter = Mock.Of<INanoResXResourceWriter>();
+            var processor = new ResourcesSourceProcessor(fileSystemService, nanoResXResourceWriter);
 
             // Act
-            Action act = () => processor.Process(nullSource);
+            Action act = () => processor.Process(nullSource, projectDirectory);
 
             // Assert
             act.Should().ThrowExactly<ArgumentNullException>()
                 .WithParameterName("resourcesLocation");
+        }
+
+        [TestMethod]
+        public void GivenProcess_WhenCalledWithNullProjectDirectory_ThenShouldThrowArgumentNullException()
+        {
+            // Arrange
+            var nullSource = new ResourcesSource();
+            var projectDirectory = null as string;
+            var fileSystemService = Mock.Of<IFileSystemService>();
+            var nanoResXResourceWriter = Mock.Of<INanoResXResourceWriter>();
+            var processor = new ResourcesSourceProcessor(fileSystemService, nanoResXResourceWriter);
+
+            // Act
+            Action act = () => processor.Process(nullSource, projectDirectory);
+
+            // Assert
+            act.Should().ThrowExactly<ArgumentNullException>()
+                .WithParameterName("projectDirectory");
         }
 
         [TestMethod]
@@ -78,19 +97,16 @@ namespace nanoFramework.MSBuildTasks.UnitTests.Services
                 FolderPath = "Resources"
             };
 
-            var options = new ResourcesSourceProcessorOptions
-            {
-                 NanoResXWriter = Mock.Of<INanoResXResourceWriter>(),
-                 ProjectDirectory = @"C:\Projects\Project",
-            };
+            var nanoResXResourceWriter = Mock.Of<INanoResXResourceWriter>();
+            var projectDirectory = @"C:\Projects\Project";
 
-            var processor = new ResourcesSourceProcessor(fileSystemServiceMock.Object, options);
+            var processor = new ResourcesSourceProcessor(fileSystemServiceMock.Object, nanoResXResourceWriter);
 
             // Act
-            processor.Process(source);
+            processor.Process(source, projectDirectory);
 
             // Assert
-            fileSystemServiceMock.Verify(x => x.GetAbsolutePath(source.FolderPath, options.ProjectDirectory), Times.Once);
+            fileSystemServiceMock.Verify(x => x.GetAbsolutePath(source.FolderPath, projectDirectory), Times.Once);
         }
 
         [TestMethod]
@@ -109,15 +125,12 @@ namespace nanoFramework.MSBuildTasks.UnitTests.Services
                 RegexFilter = ".*"
             };
 
-            var options = new ResourcesSourceProcessorOptions
-            {
-                NanoResXWriter = Mock.Of<INanoResXResourceWriter>(),
-            };
+            var nanoResXResourceWriter = Mock.Of<INanoResXResourceWriter>();
 
-            var processor = new ResourcesSourceProcessor(fileSystemServiceMock.Object, options);
+            var processor = new ResourcesSourceProcessor(fileSystemServiceMock.Object, nanoResXResourceWriter);
 
             // Act
-            processor.Process(source);
+            processor.Process(source, string.Empty);
 
             // Assert
             fileSystemServiceMock.Verify(x => x.GetDirectoryFiles(absolutePathToResourcesFolder, source.RegexFilter), Times.Once);
@@ -139,7 +152,7 @@ namespace nanoFramework.MSBuildTasks.UnitTests.Services
             };
 
             var fileSystemServiceMock = new Mock<IFileSystemService>();
-            var nanoResXWriterMock = new Mock<INanoResXResourceWriter>();
+            var nanoResXResourceWriterMock = new Mock<INanoResXResourceWriter>();
 
             fileSystemServiceMock
                 .Setup(x => x.GetAbsolutePath(It.IsAny<string>(), It.IsAny<string>()))
@@ -149,20 +162,14 @@ namespace nanoFramework.MSBuildTasks.UnitTests.Services
                 .Setup(x => x.GetDirectoryFiles(It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(resourcesFullFilesPaths);
 
-            var options = new ResourcesSourceProcessorOptions
-            {
-                NanoResXWriter = nanoResXWriterMock.Object,
-            };
-
-            var processor = new ResourcesSourceProcessor(fileSystemServiceMock.Object, options);
+            var processor = new ResourcesSourceProcessor(fileSystemServiceMock.Object, nanoResXResourceWriterMock.Object);
 
             // Act
-            processor.Process(source);
+            processor.Process(source, string.Empty);
 
             // Assert
-            nanoResXWriterMock.Verify(x => x.Add("index.html", @"C:\Resources\index.html"), Times.Once);
-            nanoResXWriterMock.Verify(x => x.Add("js/script.js", @"C:\Resources\js\script.js"), Times.Once);
-            nanoResXWriterMock.VerifyNoOtherCalls();
+            nanoResXResourceWriterMock.Verify(x => x.Add("index.html", @"C:\Resources\index.html"), Times.Once);
+            nanoResXResourceWriterMock.Verify(x => x.Add("js/script.js", @"C:\Resources\js\script.js"), Times.Once);
         }
     }
 }

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.IO.Abstractions;
-using System.IO.Abstractions.TestingHelpers;
 
 using FluentAssertions;
 
@@ -15,26 +13,27 @@ namespace nanoFramework.MSBuildTasks.UnitTests.Factories
     public class NanoResxResourceWriterFactoryTests
     {
         [TestMethod]
-        public void GivenConstructor_WhenFileSystemIsNull_ThemShouldThrowArgumentNullException()
+        public void GivenCreate_WhenCalledWithNullFileName_ThenShouldThrowArgumentNullException()
         {
             // Arrange
-            var fileSystem = null as IFileSystem;
+            var resxFileName = null as string;
+            var factory = new NanoResXResourceWriterFactory();
 
             // Act
-            Action act = () => new NanoResXResourceWriterFactory(fileSystem);
+            Action act = () => _ = factory.Create(resxFileName);
 
             // Assert
-            act.Should().ThrowExactly<ArgumentNullException>()
-                .WithParameterName("fileSystem");
+            act.Should()
+                .ThrowExactly<ArgumentNullException>()
+                .WithParameterName("fileName");
         }
 
         [TestMethod]
-        public void GivenCreate_WhenCalled_ThenShouldReturnNotNullInstanceOfNanoResXWriter()
+        public void GivenCreate_WhenCalled_ThenShouldReturnNotNullInstanceOfNanoResXResourceWriter()
         {
             // Arrange
             var resxFileName = "test.resx";
-            var fileSystem = new MockFileSystem();
-            var factory = new NanoResXResourceWriterFactory(fileSystem);
+            var factory = new NanoResXResourceWriterFactory();
 
             // Act
             var writer = factory.Create(resxFileName);

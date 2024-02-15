@@ -81,16 +81,16 @@ namespace nanoFramework.MSBuildTasks.UnitTests.Tasks
         public void GivenExecuteTask_WhenCalled_ThenShouldCreateNanoResXResourcesSourceProcessor()
         {
             // Arrange
-            var writer = Mock.Of<INanoResXResourceWriter>();
+            var nanoResXResourceWriter = Mock.Of<INanoResXResourceWriter>();
             var writerFactoryMock = new Mock<INanoResXResourceWriterFactory>();
             var processorFactoryMock = new Mock<IResourcesLocationProcessorFactory>();
 
             writerFactoryMock
                 .Setup(x => x.Create(It.IsAny<string>()))
-                .Returns(writer);
+                .Returns(nanoResXResourceWriter);
 
             processorFactoryMock
-                .Setup(x => x.Create(It.IsAny<ResourcesSourceProcessorOptions>()))
+                .Setup(x => x.Create(It.IsAny<INanoResXResourceWriter>()))
                 .Returns(Mock.Of<IResourcesSourceProcessor>());
 
             var serviceProvider = BuildServiceProvider(
@@ -107,11 +107,7 @@ namespace nanoFramework.MSBuildTasks.UnitTests.Tasks
             _ = task.InvokeExecute(serviceProvider);
 
             // Assert
-            processorFactoryMock.Verify(x => x.Create(
-                    It.Is<ResourcesSourceProcessorOptions>(o =>
-                           o.ProjectDirectory == task.ProjectDirectory
-                        && o.NanoResXWriter == writer)),
-                    Times.Once);
+            processorFactoryMock.Verify(x => x.Create(nanoResXResourceWriter), Times.Once);
         }
 
         [TestMethod]
@@ -145,7 +141,7 @@ namespace nanoFramework.MSBuildTasks.UnitTests.Tasks
                 .Returns(writerMock.Object);
 
             processorFactoryMock
-                .Setup(x => x.Create(It.IsAny<ResourcesSourceProcessorOptions>()))
+                .Setup(x => x.Create(It.IsAny<INanoResXResourceWriter>()))
                 .Returns(processorMock.Object);
 
             var serviceProvider = BuildServiceProvider(
@@ -156,6 +152,7 @@ namespace nanoFramework.MSBuildTasks.UnitTests.Tasks
             var task = new GenerateResx
             {
                 TaskItems = taskItems,
+                ProjectDirectory = @"C:\Project"
             };
 
             // Act
@@ -163,9 +160,8 @@ namespace nanoFramework.MSBuildTasks.UnitTests.Tasks
 
             // Assert
             writerMock.Verify(x => x.Generate(), Times.Once);
-            processorMock.Verify(x => x.Process(mappedResourcesSources[0]), Times.Once);
-            processorMock.Verify(x => x.Process(mappedResourcesSources[1]), Times.Once);
-            processorMock.VerifyNoOtherCalls();
+            processorMock.Verify(x => x.Process(mappedResourcesSources[0], task.ProjectDirectory), Times.Once);
+            processorMock.Verify(x => x.Process(mappedResourcesSources[1], task.ProjectDirectory), Times.Once);
         }
 
         [TestMethod]
@@ -207,7 +203,7 @@ namespace nanoFramework.MSBuildTasks.UnitTests.Tasks
                 .Returns(Mock.Of<INanoResXResourceWriter>());
 
             processorFactoryMock
-                .Setup(x => x.Create(It.IsAny<ResourcesSourceProcessorOptions>()))
+                .Setup(x => x.Create(It.IsAny<INanoResXResourceWriter>()))
                 .Returns(Mock.Of<IResourcesSourceProcessor>());
 
             serviceCollection

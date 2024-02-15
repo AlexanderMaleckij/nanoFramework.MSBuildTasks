@@ -38,24 +38,16 @@ namespace nanoFramework.MSBuildTasks.Tasks
             IResourcesLocationProcessorFactory resourcesSourceProcessorFactory)
         {
             var resourcesLocations = TaskItems.Select(resourcesSourceMapper.Map);
-            var writer = nanoResxWriterFactory.Create(ResxFileName);
+            var resXFileWriter = nanoResxWriterFactory.Create(ResxFileName);
 
-            var processorOptions = new ResourcesSourceProcessorOptions
-            {
-                ProjectDirectory = ProjectDirectory,
-                NanoResXWriter = writer,
-            };
-
-            var resourcesLocationProcessor = resourcesSourceProcessorFactory.Create(processorOptions);
-
-            using (writer)
+            using (var resourcesLocationProcessor = resourcesSourceProcessorFactory.Create(resXFileWriter))
             {
                 foreach (var resourcesLocation in resourcesLocations)
                 {
-                    resourcesLocationProcessor.Process(resourcesLocation);
+                    resourcesLocationProcessor.Process(resourcesLocation, ProjectDirectory);
                 }
 
-                writer.Generate();
+                resXFileWriter.Generate();
             }
 
             return true;

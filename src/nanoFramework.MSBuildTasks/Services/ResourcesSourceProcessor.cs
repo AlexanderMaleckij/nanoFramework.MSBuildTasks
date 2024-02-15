@@ -1,4 +1,6 @@
-﻿using nanoFramework.MSBuildTasks.Models;
+﻿using System;
+
+using nanoFramework.MSBuildTasks.Models;
 using nanoFramework.MSBuildTasks.Utils;
 
 namespace nanoFramework.MSBuildTasks.Services
@@ -6,21 +8,28 @@ namespace nanoFramework.MSBuildTasks.Services
     internal sealed class ResourcesSourceProcessor : IResourcesSourceProcessor
     {
         private readonly IFileSystemService _fileSystemService;
-        private readonly ResourcesSourceProcessorOptions _processorOptions;
+        private readonly INanoResXResourceWriter _nanoResXResourceWriter;
 
         public ResourcesSourceProcessor(
             IFileSystemService fileSystemService,
-            ResourcesSourceProcessorOptions processorOptions)
+            INanoResXResourceWriter nanoResXResourceWriter)
         {
             _fileSystemService = ParamChecker.Check(fileSystemService, nameof(fileSystemService));
-            _processorOptions = ParamChecker.Check(processorOptions, nameof(processorOptions));
+            _nanoResXResourceWriter = ParamChecker.Check(nanoResXResourceWriter, nameof(nanoResXResourceWriter));
         }
 
-        public void Process(ResourcesSource resourcesLocation)
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
+            _nanoResXResourceWriter.Dispose();
+        }
+
+        public void Process(ResourcesSource resourcesLocation, string projectDirectory)
         {
             ParamChecker.Check(resourcesLocation, nameof(resourcesLocation));
+            ParamChecker.Check(projectDirectory, nameof(projectDirectory));
 
-            var absoluteFolderPath = _fileSystemService.GetAbsolutePath(resourcesLocation.FolderPath, _processorOptions.ProjectDirectory);
+            var absoluteFolderPath = _fileSystemService.GetAbsolutePath(resourcesLocation.FolderPath, projectDirectory);
             var directoryFilesFullPaths = _fileSystemService.GetDirectoryFiles(absoluteFolderPath, resourcesLocation.RegexFilter);
 
             foreach (var directoryFileFullPath in directoryFilesFullPaths)
@@ -28,7 +37,7 @@ namespace nanoFramework.MSBuildTasks.Services
                 var relativeFilePath = directoryFileFullPath.Substring(absoluteFolderPath.Length + 1);
                 var resourceName = relativeFilePath.Replace('\\', '/');
 
-                _processorOptions.NanoResXWriter.Add(resourceName, directoryFileFullPath);
+                _nanoResXResourceWriter.Add(resourceName, directoryFileFullPath);
             }
         }
     }

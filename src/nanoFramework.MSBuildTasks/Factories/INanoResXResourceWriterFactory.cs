@@ -4,6 +4,6 @@ namespace nanoFramework.MSBuildTasks.Factories
 {
     public interface INanoResXResourceWriterFactory
     {
-        INanoResXResourceWriter Create(string resxFileName);
+        INanoResXResourceWriter Create(string fileName);
     }
 }

@@ -1,5 +1,4 @@
-﻿using nanoFramework.MSBuildTasks.Models;
-using nanoFramework.MSBuildTasks.Services;
+﻿using nanoFramework.MSBuildTasks.Services;
 using nanoFramework.MSBuildTasks.Utils;
 
 namespace nanoFramework.MSBuildTasks.Factories
@@ -13,9 +12,9 @@ namespace nanoFramework.MSBuildTasks.Factories
             _fileSystemService = ParamChecker.Check(fileSystemService, nameof(fileSystemService));
         }
 
-        public IResourcesSourceProcessor Create(ResourcesSourceProcessorOptions options)
-        {
-            return new ResourcesSourceProcessor(_fileSystemService, options);
-        }
+        public IResourcesSourceProcessor Create(INanoResXResourceWriter nanoResXResourceWriter) =>
+            new ResourcesSourceProcessor(
+                _fileSystemService,
+                ParamChecker.Check(nanoResXResourceWriter, nameof(nanoResXResourceWriter)));
     }
 }
