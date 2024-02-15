@@ -1,8 +1,8 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.IO.Abstractions;
 
 using nanoFramework.MSBuildTasks.Services;
+using nanoFramework.MSBuildTasks.Utils;
 
 namespace nanoFramework.MSBuildTasks.Factories
 {
@@ -12,7 +12,7 @@ namespace nanoFramework.MSBuildTasks.Factories
 
         public NanoResxWriterFactory(IFileSystem fileSystem)
         {
-            _fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
+            _fileSystem = ParamChecker.Check(fileSystem, nameof(fileSystem));
         }
 
         public INanoResXWriter Create(string resxFileName)

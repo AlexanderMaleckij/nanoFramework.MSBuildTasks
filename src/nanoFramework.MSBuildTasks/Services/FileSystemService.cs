@@ -1,8 +1,9 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.IO.Abstractions;
 using System.Linq;
 using System.Text.RegularExpressions;
+
+using nanoFramework.MSBuildTasks.Utils;
 
 namespace nanoFramework.MSBuildTasks.Services
 {
@@ -12,7 +13,7 @@ namespace nanoFramework.MSBuildTasks.Services
 
         public FileSystemService(IFileSystem fileSystem)
         {
-            _fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
+            _fileSystem = ParamChecker.Check(fileSystem, nameof(fileSystem));
         }
 
         public string[] GetDirectoryFiles(string path, string regexFilter)

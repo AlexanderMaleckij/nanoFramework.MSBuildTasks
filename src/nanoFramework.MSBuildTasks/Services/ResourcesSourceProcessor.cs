@@ -1,6 +1,5 @@
-﻿using System;
-
-using nanoFramework.MSBuildTasks.Models;
+﻿using nanoFramework.MSBuildTasks.Models;
+using nanoFramework.MSBuildTasks.Utils;
 
 namespace nanoFramework.MSBuildTasks.Services
 {
@@ -13,16 +12,13 @@ namespace nanoFramework.MSBuildTasks.Services
             IFileSystemService fileSystemService,
             ResourcesSourceProcessorOptions processorOptions)
         {
-            _fileSystemService = fileSystemService ?? throw new ArgumentNullException(nameof(fileSystemService));
-            _processorOptions = processorOptions ?? throw new ArgumentNullException(nameof(processorOptions));
+            _fileSystemService = ParamChecker.Check(fileSystemService, nameof(fileSystemService));
+            _processorOptions = ParamChecker.Check(processorOptions, nameof(processorOptions));
         }
 
         public void Process(ResourcesSource resourcesLocation)
         {
-            if (resourcesLocation is null)
-            {
-                throw new ArgumentNullException(nameof(resourcesLocation));
-            }
+            ParamChecker.Check(resourcesLocation, nameof(resourcesLocation));
 
             var absoluteFolderPath = _fileSystemService.GetAbsolutePath(resourcesLocation.FolderPath, _processorOptions.ProjectDirectory);
             var directoryFilesFullPaths = _fileSystemService.GetDirectoryFiles(absoluteFolderPath, resourcesLocation.RegexFilter);

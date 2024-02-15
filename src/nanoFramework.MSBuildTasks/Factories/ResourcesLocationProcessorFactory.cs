@@ -1,7 +1,6 @@
-﻿using System;
-
-using nanoFramework.MSBuildTasks.Models;
+﻿using nanoFramework.MSBuildTasks.Models;
 using nanoFramework.MSBuildTasks.Services;
+using nanoFramework.MSBuildTasks.Utils;
 
 namespace nanoFramework.MSBuildTasks.Factories
 {
@@ -11,7 +10,7 @@ namespace nanoFramework.MSBuildTasks.Factories
 
         public ResourcesLocationProcessorFactory(IFileSystemService fileSystemService)
         {
-            _fileSystemService = fileSystemService ?? throw new ArgumentNullException(nameof(fileSystemService));
+            _fileSystemService = ParamChecker.Check(fileSystemService, nameof(fileSystemService));
         }
 
         public IResourcesSourceProcessor Create(ResourcesSourceProcessorOptions options)

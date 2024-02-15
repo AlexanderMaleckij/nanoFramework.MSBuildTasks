@@ -1,6 +1,7 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Resources;
+
+using nanoFramework.MSBuildTasks.Utils;
 
 namespace nanoFramework.MSBuildTasks.Services
 {
@@ -10,10 +11,7 @@ namespace nanoFramework.MSBuildTasks.Services
 
         public NanoResXWriter(Stream stream)
         {
-            if (stream is null)
-            {
-                throw new ArgumentNullException(nameof(stream));
-            }
+            ParamChecker.Check(stream, nameof(stream));
 
             _resXResourceWriter = new ResXResourceWriter(stream);
         }
