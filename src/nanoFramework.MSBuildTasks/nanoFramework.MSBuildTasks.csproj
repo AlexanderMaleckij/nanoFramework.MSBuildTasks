@@ -30,7 +30,7 @@
   <PropertyGroup>
     <IsPackable>true</IsPackable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageId>$(AssemblyName)</PackageId>
+    <PackageId>amaletski.nanoFramework.MSBuildTasks</PackageId>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RequireLicenseAcceptance>true</RequireLicenseAcceptance>
     <AutoGenerateAssemblyVersion>true</AutoGenerateAssemblyVersion>
