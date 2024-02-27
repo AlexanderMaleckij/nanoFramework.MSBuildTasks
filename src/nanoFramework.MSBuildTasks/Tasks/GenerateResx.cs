@@ -1,12 +1,14 @@
-﻿using System.IO.Abstractions;
-using System.Linq;
+﻿using System;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.IO.Abstractions;
 
 using Microsoft.Build.Framework;
 using Microsoft.Extensions.DependencyInjection;
 
-using nanoFramework.MSBuildTasks.Factories;
-using nanoFramework.MSBuildTasks.Mappers;
-using nanoFramework.MSBuildTasks.Models;
+using nanoFramework.MSBuildTasks.Pipelines;
+using nanoFramework.MSBuildTasks.Pipelines.ResX.Models;
+using nanoFramework.MSBuildTasks.Pipelines.ResX.Steps;
 using nanoFramework.MSBuildTasks.Services;
 
 namespace nanoFramework.MSBuildTasks.Tasks
@@ -17,40 +19,46 @@ namespace nanoFramework.MSBuildTasks.Tasks
         public string ProjectDirectory { get; set; }
 
         [Required]
-        public string ResxFileName { get; set; }
+        public string ProjectFullPath { get; set; }
+
+        [Required]
+        public string ResXFileName { get; set; }
 
         [Required]
         public ITaskItem[] TaskItems { get; set; }
 
+        [ExcludeFromCodeCoverage]
         public override void ConfigureServices(IServiceCollection collection)
         {
+            collection.AddSingleton(Log);
+
             collection
-                .AddSingleton<ITaskItemMapper<ResourcesSource>, ResourcesSourceMapper>()
-                .AddSingleton<INanoResXResourceWriterFactory, NanoResXResourceWriterFactory>()
-                .AddSingleton<IResourcesLocationProcessorFactory, ResourcesLocationProcessorFactory>()
                 .AddSingleton<IFileSystemService, FileSystemService>()
                 .AddSingleton<IFileSystem>(new FileSystem());
+
+            collection
+                .AddSingleton<IPipelineStep<ResXGenerationContext>, ParseInputStep>()
+                .AddSingleton<IPipelineStep<ResXGenerationContext>, ValidateInputStep>()
+                .AddSingleton<IPipelineStep<ResXGenerationContext>, TransformInputStep>()
+                .AddSingleton<IPipelineStep<ResXGenerationContext>, LookupFilesToIncludeStep>()
+                .AddSingleton<IPipelineStep<ResXGenerationContext>, GenerateResXFileStep>()
+                .AddSingleton<IPipelineRunner<ResXGenerationContext>, PipelineRunner<ResXGenerationContext>>();
         }
 
-        public bool ExecuteTask(
-            ITaskItemMapper<ResourcesSource> resourcesSourceMapper,
-            INanoResXResourceWriterFactory nanoResxWriterFactory,
-            IResourcesLocationProcessorFactory resourcesSourceProcessorFactory)
+        public bool ExecuteTask(IPipelineRunner<ResXGenerationContext> pipelineRunner)
         {
-            var resourcesLocations = TaskItems.Select(resourcesSourceMapper.Map);
-            var resXFileWriter = nanoResxWriterFactory.Create(ResxFileName);
-
-            using (var resourcesLocationProcessor = resourcesSourceProcessorFactory.Create(resXFileWriter))
+            var context = new ResXGenerationContext
             {
-                foreach (var resourcesLocation in resourcesLocations)
+                TaskInput = new GenerateResXTaskInput
                 {
-                    resourcesLocationProcessor.Process(resourcesLocation, ProjectDirectory);
+                    ProjectDirectory = ProjectDirectory,
+                    ProjectFullPath = ProjectFullPath,
+                    ResXFileName = ResXFileName,
+                    TaskItems = TaskItems,
                 }
+            };
 
-                resXFileWriter.Generate();
-            }
-
-            return true;
+            return pipelineRunner.Run(context);
         }
     }
 }

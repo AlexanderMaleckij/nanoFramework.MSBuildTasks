@@ -22,4 +22,14 @@
     <ProjectReference Include="..\nanoFramework.MSBuildTasks\nanoFramework.MSBuildTasks.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Pipelines\ResX\Steps\Resources.resx.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

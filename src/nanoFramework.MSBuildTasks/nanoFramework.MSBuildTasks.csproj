@@ -45,22 +45,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- these lines pack the build props/targets files to the `build` folder in the generated package.
- 		  by convention, the .NET SDK will look for build\<Package Id>.props and build\<Package Id>.targets
- 		  for automatic inclusion in the build.
-      https://learn.microsoft.com/ru-ru/nuget/concepts/msbuild-props-and-targets -->
-    <None Include="build\$(PackageId).props" Pack="true" PackagePath="build\" />
-    <None Include="build\$(PackageId).targets" Pack="true" PackagePath="build\" />
-
-    <None Include="build\_._" Pack="true" PackagePath="lib\$(TargetFramework)\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="..\..\images\nf-logo.png" Pack="true" Visible="false" PackagePath="\" />
     <None Include="..\..\README.md" Pack="true" Visible="false" PackagePath="\" />
+    <None Include="nuget\**" Pack="true" PackagePath="\" />
   </ItemGroup>
   
   <ItemGroup>
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Windows.Forms" />
     <PackageReference Include="Microsoft.Build.Framework" Version="17.9.5" />
     <PackageReference Include="Microsoft.Build.Utilities.Core" Version="17.9.5" />

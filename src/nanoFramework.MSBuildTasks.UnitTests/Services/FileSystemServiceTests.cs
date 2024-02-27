@@ -30,41 +30,6 @@ namespace nanoFramework.MSBuildTasks.UnitTests.Services
         }
 
         [TestMethod]
-        public void GivenGetDirectoryFiles_WhenCalledWithValidPathAndFilter_ThenShouldReturnExpectedResult()
-        {
-            // Arrange
-            var path = @"C:\Folder";
-            var regexFilter = ".*html|.*css|.*js";
-
-            var expectedFilePaths = new[]
-            {
-                @"C:\Folder\index.html",
-                @"C:\Folder\js\script.js",
-                @"C:\Folder\css\styles.css",
-            };
-
-            var distractingFilePaths = new[]
-            {
-                @"C:\Folder\ignore.txt",
-                @"C:\Stuff\index.html",
-            };
-
-            var mockFileSystem = new MockFileSystem(new Dictionary<string, MockFileData>(), path);
-            var fileSystemService = new FileSystemService(mockFileSystem);
-
-            foreach (var testFilePath in expectedFilePaths.Concat(distractingFilePaths))
-            {
-                mockFileSystem.AddEmptyFile(testFilePath);
-            }
-
-            // Act
-            var actualFilePaths = fileSystemService.GetDirectoryFiles(path, regexFilter);
-            
-            // Assert
-            actualFilePaths.Should().BeEquivalentTo(expectedFilePaths);
-        }
-
-        [TestMethod]
         public void GivenGetAbsolutePath_WhenCalledWithAbsolutePath_ThenShouldReturnTheSamePath()
         {
             // Arrange

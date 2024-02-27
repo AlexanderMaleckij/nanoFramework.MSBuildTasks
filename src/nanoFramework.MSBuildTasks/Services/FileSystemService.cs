@@ -1,7 +1,4 @@
-﻿using System.IO;
-using System.IO.Abstractions;
-using System.Linq;
-using System.Text.RegularExpressions;
+﻿using System.IO.Abstractions;
 
 using nanoFramework.MSBuildTasks.Utils;
 
@@ -14,17 +11,6 @@ namespace nanoFramework.MSBuildTasks.Services
         public FileSystemService(IFileSystem fileSystem)
         {
             _fileSystem = ParamChecker.Check(fileSystem, nameof(fileSystem));
-        }
-
-        public string[] GetDirectoryFiles(string path, string regexFilter)
-        {
-            var filter = new Regex(regexFilter);
-            var matchingDirectoryFiles = _fileSystem.Directory
-                .GetFiles(path, "*", SearchOption.AllDirectories)
-                .Where(filePath => filter.IsMatch(filePath))
-                .ToArray();
-
-            return matchingDirectoryFiles;
         }
 
         public string GetAbsolutePath(string path, string basePath)
