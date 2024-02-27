@@ -35,8 +35,8 @@
     <RequireLicenseAcceptance>true</RequireLicenseAcceptance>
     <AutoGenerateAssemblyVersion>true</AutoGenerateAssemblyVersion>
     <Authors>Aliaksandr Maletski</Authors>
-    <Description></Description>
-    <PackageTags>nanoFramework;MSBuild;C#;csharp;netnf;ResourceManager</PackageTags>
+    <Description>This package offers a specialized MSBuild task designed to effortlessly generate .resx file and embed .resources into the target assembly.</Description>
+    <PackageTags>nanoFramework;MSBuild;C#;csharp;netnf;ResourceManager;ResX</PackageTags>
     <PackageProjectUrl>https://github.com/AlexanderMaleckij/nanoFramework.MSBuildTasks</PackageProjectUrl>
     <RepositoryUrl>https://github.com/AlexanderMaleckij/nanoFramework.MSBuildTasks</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
