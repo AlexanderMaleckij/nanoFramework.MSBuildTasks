@@ -11,17 +11,15 @@
    - Select "Edit Project File".
  - Add `props` and `targets` imports in the `nfproj`:
    - Add the following `Import` after the last `props` `Import` node (somewhere at the top of the project node).
-     > [!NOTE]
-     > Replace [PackageVersion] with the appropriate version.
      ```xml
         <Import Project="..\packages\amaletski.nanoFramework.MSBuildTasks.[PackageVersion]\build\netnano1.0\amaletski.nanoFramework.MSBuildTasks.props" />
      ```
+     Note: Replace [PackageVersion] with the appropriate version.
    - Add the following `Import` after the last `targets` `Import` node (somewhere at the bottom of the project node).
-     > [!NOTE]
-     > Replace [PackageVersion] with the appropriate version.
      ```xml
         <Import Project="..\packages\amaletski.nanoFramework.MSBuildTasks.[PackageVersion]\build\netnano1.0\amaletski.nanoFramework.MSBuildTasks.targets" />
      ```
+     Note: Replace [PackageVersion] with the appropriate version.
    - Press `Ctrl+S` to save changes.
  - Reload the project:
    - Right click the unloaded project in the "Solution Explorer" window.
