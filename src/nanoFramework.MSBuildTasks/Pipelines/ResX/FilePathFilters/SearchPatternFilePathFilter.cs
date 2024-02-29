@@ -1,4 +1,5 @@
-﻿using System.IO.Abstractions;
+﻿using System.IO;
+using System.IO.Abstractions;
 
 using nanoFramework.MSBuildTasks.Utils;
 
@@ -8,11 +9,14 @@ namespace nanoFramework.MSBuildTasks.Pipelines.ResX.FilePathFilters
     {
         private readonly IFileSystem _fileSystem;
 
-        public SearchPatternFilePathFilter(string searchPattern, IFileSystem fileSystem)
+        public SearchPatternFilePathFilter(string searchPattern, SearchOption searchOption, IFileSystem fileSystem)
         {
             SearchPattern = ParamChecker.Check(searchPattern, nameof(searchPattern));
             _fileSystem = ParamChecker.Check(fileSystem, nameof(fileSystem));
+            SearchOption = searchOption;
         }
+
+        public SearchOption SearchOption { get; }
 
         public string SearchPattern { get; }
 
@@ -20,7 +24,7 @@ namespace nanoFramework.MSBuildTasks.Pipelines.ResX.FilePathFilters
         {
             ParamChecker.Check(basePath, nameof(basePath));
 
-            return _fileSystem.Directory.GetFiles(basePath, SearchPattern);
+            return _fileSystem.Directory.GetFiles(basePath, SearchPattern, SearchOption);
         }
     }
 }

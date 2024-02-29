@@ -1,4 +1,5 @@
-﻿using System.IO.Abstractions;
+﻿using System.IO;
+using System.IO.Abstractions;
 using System.Linq;
 
 using Microsoft.Build.Utilities;
@@ -33,7 +34,7 @@ namespace nanoFramework.MSBuildTasks.Pipelines.ResX.Steps
 
             if (!string.IsNullOrEmpty(input.SearchPattern))
             {
-                filter = new SearchPatternFilePathFilter(input.SearchPattern, _fileSystem);
+                filter = new SearchPatternFilePathFilter(input.SearchPattern, SearchOption.AllDirectories, _fileSystem);
             }
 
             if (!string.IsNullOrEmpty(input.RegexFilter))
@@ -41,7 +42,7 @@ namespace nanoFramework.MSBuildTasks.Pipelines.ResX.Steps
                 filter = new RegexFilePathFilter(input.RegexFilter, _fileSystem);
             }
 
-            filter = filter ?? new SearchPatternFilePathFilter("*", _fileSystem);
+            filter = filter ?? new SearchPatternFilePathFilter("*", SearchOption.AllDirectories, _fileSystem);
 
             return new ResourcesSource(input.DirectoryPath, filter);
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.IO.Abstractions;
 using System.IO.Abstractions.TestingHelpers;
 using System.Linq;
@@ -43,7 +44,7 @@ namespace nanoFramework.MSBuildTasks.UnitTests.Pipelines.ResX.FilePathFilters
             string nullParamName)
         {
             // Act
-            Action act = () => _ = new SearchPatternFilePathFilter(searchPattern, fileSystem);
+            Action act = () => _ = new SearchPatternFilePathFilter(searchPattern, SearchOption.AllDirectories, fileSystem);
 
             // Assert
             act.Should()
@@ -56,7 +57,7 @@ namespace nanoFramework.MSBuildTasks.UnitTests.Pipelines.ResX.FilePathFilters
         {
             // Arrange
             var basePath = null as string;
-            var filter = new SearchPatternFilePathFilter("*.html", Mock.Of<IFileSystem>());
+            var filter = new SearchPatternFilePathFilter("*.html", SearchOption.AllDirectories, Mock.Of<IFileSystem>());
 
             // Act
             Action act = () => _ = filter.GetMatchingFilePaths(basePath);
@@ -78,6 +79,7 @@ namespace nanoFramework.MSBuildTasks.UnitTests.Pipelines.ResX.FilePathFilters
             {
                 @"C:\Folder\index.html",
                 @"C:\Folder\page1.html",
+                @"C:\Folder\nested\index.html",
             };
 
             var distractingFilePaths = new[]
@@ -89,7 +91,7 @@ namespace nanoFramework.MSBuildTasks.UnitTests.Pipelines.ResX.FilePathFilters
             };
 
             var mockFileSystem = new MockFileSystem(new Dictionary<string, MockFileData>(), path);
-            var filter = new SearchPatternFilePathFilter(searchPattern, mockFileSystem);
+            var filter = new SearchPatternFilePathFilter(searchPattern, SearchOption.AllDirectories, mockFileSystem);
 
             foreach (var testFilePath in expectedFilePaths.Concat(distractingFilePaths))
             {
