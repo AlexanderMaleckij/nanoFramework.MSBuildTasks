@@ -1,4 +1,5 @@
-﻿using System.IO.Abstractions;
+﻿using System.IO;
+using System.IO.Abstractions;
 using System.Resources;
 
 using Microsoft.Build.Utilities;
@@ -23,7 +24,7 @@ namespace nanoFramework.MSBuildTasks.Pipelines.ResX.Steps
         {
             _taskLoggingHelper.LogMessage("Generating resource file. File name = {fileName}", context.TaskInput.ResXFileName);
 
-            using (var fileStream = _fileSystem.File.OpenWrite(context.TaskInput.ResXFileName))
+            using (var fileStream = _fileSystem.File.Open(context.TaskInput.ResXFileName, FileMode.Create))
             {
                 using (var writer = new ResXResourceWriter(fileStream))
                 {
