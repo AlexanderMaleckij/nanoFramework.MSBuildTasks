@@ -31,7 +31,7 @@
     <IsPackable>true</IsPackable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>amaletski.nanoFramework.MSBuildTasks</PackageId>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <RequireLicenseAcceptance>true</RequireLicenseAcceptance>
     <AutoGenerateAssemblyVersion>true</AutoGenerateAssemblyVersion>
     <Authors>Aliaksandr Maletski</Authors>
@@ -45,6 +45,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="..\..\LICENSE" Pack="true" Visible="false" PackagePath="\" />
     <None Include="..\..\README.md" Pack="true" Visible="false" PackagePath="\" />
     <None Include="nuget\**" Pack="true" PackagePath="\" />
   </ItemGroup>
