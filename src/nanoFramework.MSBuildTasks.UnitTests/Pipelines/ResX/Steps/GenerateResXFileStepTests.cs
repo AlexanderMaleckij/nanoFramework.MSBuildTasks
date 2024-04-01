@@ -108,7 +108,7 @@ namespace nanoFramework.MSBuildTasks.UnitTests.Pipelines.ResX.Steps
             var mockFileSystem = new MockFileSystem(new Dictionary<string, MockFileData>(), @"C:\Folder");
 
             var step = new GenerateResXFileStep(taskLoggingHelper, mockFileSystem);
-           
+
             // Act
             step.Handle(context);
 

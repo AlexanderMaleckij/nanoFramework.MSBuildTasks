@@ -1,6 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.IO.Abstractions;
 
 using Microsoft.Build.Framework;
