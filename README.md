@@ -1,4 +1,7 @@
-﻿# nanoFramework.MSBuildTasks
+﻿[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![NuGet](https://img.shields.io/nuget/v/amaletski.nanoFramework.MSBuildTasks.svg?label=NuGet&style=flat&logo=nuget)](https://www.nuget.org/packages/amaletski.nanoFramework.MSBuildTasks/)
+
+# nanoFramework.MSBuildTasks
 
 ## Package Installation (Visual Studio)
 
@@ -41,7 +44,7 @@ There are likely some issues with the nanoFramework project system because, acco
 
 To use this feature, `nfproj` should be updated.
 
-Files that should be included in the embedded `resources` can be configured through user-defined `ResourcesSource` elements.
+Files that should be included in the embedded `resources` can be configured through user-defined `ResourcesSource` elements. All files that match will be embedded as <b>binary</b> resources.
 
 > [!NOTE]
 > If there are no `ResourcesSource` elements in the `nfproj`, the `resx` file will not be generated, and `resources` will not be embedded.
