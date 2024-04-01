@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO.Abstractions;
 using System.Linq;
 
 using Microsoft.Build.Utilities;
@@ -14,7 +15,9 @@ namespace nanoFramework.MSBuildTasks.Pipelines.ResX.Steps
         private readonly IFileSystemService _fileSystemService;
         private readonly TaskLoggingHelper _taskLoggingHelper;
 
-        public LookupFilesToIncludeStep(IFileSystemService fileSystemService, TaskLoggingHelper taskLoggingHelper)
+        public LookupFilesToIncludeStep(
+            IFileSystemService fileSystemService,
+            TaskLoggingHelper taskLoggingHelper)
         {
             _fileSystemService = ParamChecker.Check(fileSystemService, nameof(fileSystemService));
             _taskLoggingHelper = ParamChecker.Check(taskLoggingHelper, nameof(taskLoggingHelper));
@@ -29,18 +32,18 @@ namespace nanoFramework.MSBuildTasks.Pipelines.ResX.Steps
             foreach (var resourcesSource in context.ResourcesSources)
             {
                 var absoluteDirectoryPath = _fileSystemService.GetAbsolutePath(resourcesSource.DirectoryPath, context.TaskInput.ProjectDirectory);
-                var directoryFilesFullPaths = resourcesSource.PathFilter.GetMatchingFilePaths(absoluteDirectoryPath);
+                var resourceFilesFullPaths = resourcesSource.PathFilter.GetMatchingFilePaths(absoluteDirectoryPath);
 
-                foreach (var directoryFileFullPath in directoryFilesFullPaths)
+                foreach (var resourceFileFullPath in resourceFilesFullPaths)
                 {
-                    var relativeFilePath = directoryFileFullPath.Substring(absoluteDirectoryPath.Length + 1);
+                    var relativeFilePath = resourceFileFullPath.Substring(absoluteDirectoryPath.Length + 1);
                     var resourceName = relativeFilePath.Replace('\\', '/');
 
                     fileResourceInfos.Add(
                         new FileResourceInfo
                         {
                             Name = resourceName,
-                            Path = directoryFileFullPath,
+                            Path = resourceFileFullPath,
                         });
                 }
             }
