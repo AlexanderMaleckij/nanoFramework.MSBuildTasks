@@ -4,7 +4,6 @@ on: push
 
 permissions:
   contents: read
-  packages: write
 
 env:
   DOTNET_NOLOGO: true
@@ -19,12 +18,14 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Install .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '6.x'
+          dotnet-version: '8.x'
 
       - name: Restore packages
         run: dotnet restore
@@ -32,26 +33,29 @@ jobs:
       - name: Build
         run: dotnet build --configuration ${{env.BUILD_CONFIG}} --no-restore
 
-      - name: Run tests
+      - name: Test
         run: dotnet test /p:Configuration=${{env.BUILD_CONFIG}} --no-restore --no-build
 
-      - name: Upload atrifact
-        uses: actions/upload-artifact@v2
+      - name: Upload Artifact
+        if: ${{ github.ref == 'refs/heads/master' }}
+        uses: actions/upload-artifact@v4
         with:
           name: ${{env.ARTIFACT_NAME}}
           path: '**\*.nupkg'
+          if-no-files-found: error
+          retention-days: 1
   
   CD:
-    name: Publish to GitHub Package Repository
+    name: Publish NuGet Package
     needs: CI
     runs-on: ubuntu-latest
     if: ${{ github.ref == 'refs/heads/master' }}
     steps:
-      - name: Download artifacts
-        uses: actions/download-artifact@v2
+      - name: Download artifact
+        uses: actions/download-artifact@v4
         with:
           name: ${{env.ARTIFACT_NAME}}
           path: ${{github.workspace}}/artifacts
       
-      - name: Push to GPR
-        run: dotnet nuget push ${{github.workspace}}/artifacts/**/*.nupkg -k ${{secrets.GITHUB_TOKEN}} -s https://nuget.pkg.github.com/${{github.repository_owner}}/index.json
+      - name: Push to NuGet
+        run: dotnet nuget push ${{github.workspace}}/artifacts/**/*.nupkg -k ${{secrets.NUGET_API_KEY}} -s https://api.nuget.org/v3/index.json
