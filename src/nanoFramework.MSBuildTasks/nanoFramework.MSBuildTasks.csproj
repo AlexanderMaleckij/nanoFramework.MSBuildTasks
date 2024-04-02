@@ -14,8 +14,6 @@
 
     <!-- Tell the SDK to generate a deps.json file -->
     <GenerateDependencyFile>true</GenerateDependencyFile>
-
-    <GenerateNuspecDependsOn>$(GenerateNuspecDependsOn);ReadPackageVersionFromOutputAssembly</GenerateNuspecDependsOn>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
@@ -23,13 +21,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <AssemblyVersion>0.1.*</AssemblyVersion>
-    <Deterministic>false</Deterministic>
-  </PropertyGroup>
-
-  <PropertyGroup>
     <IsPackable>true</IsPackable>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>amaletski.nanoFramework.MSBuildTasks</PackageId>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <RequireLicenseAcceptance>true</RequireLicenseAcceptance>
@@ -57,6 +49,9 @@
     <PackageReference Include="Microsoft.Build.Utilities.Core" Version="17.9.5" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" />
+    <PackageReference Include="Nerdbank.GitVersioning" Version="3.6.133">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="System.IO.Abstractions" Version="20.0.15" />
 
     <!-- marks all packages as 'local only' so they don't end up in the nuspec -->
@@ -83,15 +78,4 @@
       <BuiltProjectOutputGroupOutput Include="$(ProjectDepsFilePath)" TargetPath="$(ProjectDepsFileName)" FinalOutputPath="$(ProjectDepsFilePath)" />
     </ItemGroup>
   </Target>
-
-  <!-- This target sets package version equal to assembly version -->
-  <Target Name="ReadPackageVersionFromOutputAssembly" DependsOnTargets="Build">
-    <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
-      <Output TaskParameter="Assemblies" ItemName="PackAssembly" />
-    </GetAssemblyIdentity>
-    <PropertyGroup>
-      <PackageVersion>%(PackAssembly.Version)</PackageVersion>
-    </PropertyGroup>
-  </Target>
-  
 </Project>

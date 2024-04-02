@@ -27,14 +27,20 @@ jobs:
         with:
           dotnet-version: '8.x'
 
+      - name: Versioning
+        uses: dotnet/nbgv@v0.4.2
+
       - name: Restore packages
         run: dotnet restore
 
       - name: Build
-        run: dotnet build --configuration ${{env.BUILD_CONFIG}} --no-restore
+        run: dotnet build -c ${{env.BUILD_CONFIG}} --no-restore
 
       - name: Test
         run: dotnet test /p:Configuration=${{env.BUILD_CONFIG}} --no-restore --no-build
+
+      - name: Pack
+        run: dotnet pack -c ${{env.BUILD_CONFIG}} --no-restore --no-build
 
       - name: Upload Artifact
         if: ${{ github.ref == 'refs/heads/master' }}
