@@ -10,7 +10,7 @@
     <BuildOutputTargetFolder>tasks</BuildOutputTargetFolder>
 
     <!-- NuGet does validation that libraries in a package are exposed as dependencies, but we _explicitly_ do not want that behavior for MSBuild tasks. They are isolated by design. Therefore we ignore this specific warning. -->
-    <NoWarn>NU5100</NoWarn>
+    <NoWarn>NU5100;NU5128</NoWarn>
 
     <!-- Tell the SDK to generate a deps.json file -->
     <GenerateDependencyFile>true</GenerateDependencyFile>
