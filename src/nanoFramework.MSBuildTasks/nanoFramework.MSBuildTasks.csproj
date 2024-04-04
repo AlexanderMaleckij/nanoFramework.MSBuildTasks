@@ -32,7 +32,6 @@
     <PackageProjectUrl>https://github.com/AlexanderMaleckij/nanoFramework.MSBuildTasks</PackageProjectUrl>
     <RepositoryUrl>https://github.com/AlexanderMaleckij/nanoFramework.MSBuildTasks</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageIcon>nf-logo.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
